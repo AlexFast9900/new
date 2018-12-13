@@ -1,0 +1,12 @@
+import xml.etree.ElementTree as ET
+import pandas as pd
+def parse(element, parsed=None):
+        if parsed is None: parsed = dict()
+        for key in element.keys(): parsed[key] = element.attrib.get(key)
+        if element.text: parsed[element.tag] = element.text
+        for child in list(element): parse(child, parsed)
+        return parsed
+xml_data = open("films.xml").read()
+root = ET.XML(xml_data)
+data = pd.DataFrame([parse(chil) for chil in iter(root)])
+data.to_csv('notcsv.csv')
